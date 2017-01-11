@@ -8,8 +8,8 @@ Ansible Async Wrapper
 
 When executing same task on a lot of hosts with execution time that depends on each specific host in cluster you may consider to run these playbooks fully independently on each host, so you not obligated to wait last finishers on each task.
 #### Note
-Working thru the '--limit' option when inventory file submitted
-makes all your group variables in place (if any)
+* Working thru the '--limit' option when inventory file submitted makes all your group variables in place (if any)
+* For now, not checking for 'hosts: group' in playbook, reading all hosts from inventory file
 
 #### Usage
 ####
