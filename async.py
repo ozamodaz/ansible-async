@@ -8,10 +8,11 @@ Note!
   reading all hosts from inventory file
 '''
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import os
 import re
 
-quite = True
+max_workers = 10
 log = True
 logdir = '.log'
 if not os.path.exists(logdir):
@@ -23,7 +24,6 @@ parser.add_argument('playbook', metavar='playbook.yml', type=str, nargs=1,
                            help='path to Ansible playbook')
 parser.add_argument('-i', dest='inventory', type=str, nargs=1, required=True,
              help='specify inventory host path or comma separated host list')
-
 
 def inventory_file(inventory):
     hosts = []
@@ -53,12 +53,11 @@ else:
     hosts = inventory_file(inventory)
     hosts_file = True
 
-
-for host in hosts:
-    limit = '--limit %s' % host if hosts_file else ''
-    inventory = ','.join(hosts) if not hosts_file else inventory
-    log = '> %s/%s' % (logdir, host) if log else ''
-    quite = '&' if quite else ''
-    call = 'ansible-playbook -i "%s" %s %s %s %s' % \
-               (inventory, limit, playbook, log, quite)
-    os.system(call)
+with ThreadPoolExecutor(max_workers=max_workers) as executor:
+    for host in hosts:
+        limit = '--limit %s' % host if hosts_file else ''
+        inventory = ','.join(hosts) if not hosts_file else inventory
+        log = '> %s/%s' % (logdir, host) if log else ''
+        call = 'ansible-playbook -i "%s" %s %s %s' % \
+                   (inventory, limit, playbook, log)
+        worker = executor.submit(os.system, call)
