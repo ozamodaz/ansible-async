@@ -21,7 +21,7 @@ $ python async.py -i "host1.domain.name,host2.domain.name,..." playbook.yml
 #### Options
 ####
 ```sh
-quite = True        ------->      Don't print all this madness to STDOUT
-log = True          ------->      But let me know if anybody fails
-logdir = '.log'     ------->      And write logs here
+max_workers = 10    ------->      max threads
+log = True          ------->      log mode
+logdir = '.log'     ------->      log path
 ```
